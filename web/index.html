@@ -1,44 +1,36 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>SOVEREIGN-1 // SPECTRAL EDITION</title>
+    <meta charset="UTF-8">
+    <title>SOVEREIGN-DUMP MONITOR</title>
     <style>
-        body { background: #000; color: #0f0; font-family: monospace; }
-        #waterfall { border: 1px solid #333; width: 100%; height: 150px; background: #050505; }
-        .stats { display: flex; gap: 20px; margin-bottom: 10px; }
+        body { background: #050505; color: #00ff41; font-family: 'Courier New', monospace; padding: 30px; }
+        .header { border-bottom: 2px solid #00ff41; margin-bottom: 20px; }
+        .pass-list { list-style: none; padding: 0; }
+        .pass-list li { background: #111; margin: 5px 0; padding: 10px; border-left: 5px solid #00ff41; }
+        a { color: #00ff41; text-decoration: none; font-weight: bold; }
+        a:hover { background: #00ff41; color: #000; }
+        .glitch { animation: glitch 1s linear infinite; }
+        @keyframes glitch { 2% { opacity: 0; } 4% { opacity: 1; } }
     </style>
 </head>
 <body>
-    <h1>🛰️ SOVEREIGN-1 MISSION CONTROL</h1>
-    <div class="stats">
-        <div id="snr">SNR: -- dB</div>
-        <div id="lock">STATUS: IDLE</div>
+    <div class="header">
+        <h1 class="glitch">SYSTEM STATUS: SOVEREIGN-DUMP LIVE</h1>
+        <p>Ground Station: Fedora Terminal | Decoding: NOAA APT Protocol</p>
     </div>
-    <canvas id="waterfall"></canvas>
-    <div id="gallery"></div>
-
+    <div id="content">
+        <h3>INCOMING DATA STREAMS:</h3>
+        <ul id="list" class="pass-list">
+            </ul>
+    </div>
     <script>
-        const canvas = document.getElementById('waterfall');
-        const ctx = canvas.getContext('2d');
-        
-        async function drawWaterfall() {
-            try {
-                const res = await fetch('../data/waterfall.json');
-                const data = await res.json();
-                
-                // Shift existing pixels left
-                const imgData = ctx.getImageData(1, 0, canvas.width - 1, canvas.height);
-                ctx.putImageData(imgData, 0, 0);
-                
-                // Draw new vertical slice
-                data.forEach((val, i) => {
-                    const hue = Math.min(255, val * 100); 
-                    ctx.fillStyle = `rgb(0, ${hue}, 0)`;
-                    ctx.fillRect(canvas.width - 1, canvas.height - (i * 2), 1, 2);
-                });
-            } catch(e) {}
-        }
-        setInterval(drawWaterfall, 1000);
+        // Auto-update the list every 5 seconds
+        setInterval(async () => {
+            const response = await fetch('index_list.html');
+            const html = await response.text();
+            document.getElementById('list').innerHTML = html;
+        }, 5000);
     </script>
 </body>
 </html>
