@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SOVEREIGN-1 // SPECTRAL EDITION</title>
+    <style>
+        body { background: #000; color: #0f0; font-family: monospace; }
+        #waterfall { border: 1px solid #333; width: 100%; height: 150px; background: #050505; }
+        .stats { display: flex; gap: 20px; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <h1>🛰️ SOVEREIGN-1 MISSION CONTROL</h1>
+    <div class="stats">
+        <div id="snr">SNR: -- dB</div>
+        <div id="lock">STATUS: IDLE</div>
+    </div>
+    <canvas id="waterfall"></canvas>
+    <div id="gallery"></div>
+
+    <script>
+        const canvas = document.getElementById('waterfall');
+        const ctx = canvas.getContext('2d');
+        
+        async function drawWaterfall() {
+            try {
+                const res = await fetch('../data/waterfall.json');
+                const data = await res.json();
+                
+                // Shift existing pixels left
+                const imgData = ctx.getImageData(1, 0, canvas.width - 1, canvas.height);
+                ctx.putImageData(imgData, 0, 0);
+                
+                // Draw new vertical slice
+                data.forEach((val, i) => {
+                    const hue = Math.min(255, val * 100); 
+                    ctx.fillStyle = `rgb(0, ${hue}, 0)`;
+                    ctx.fillRect(canvas.width - 1, canvas.height - (i * 2), 1, 2);
+                });
+            } catch(e) {}
+        }
+        setInterval(drawWaterfall, 1000);
+    </script>
+</body>
+</html>

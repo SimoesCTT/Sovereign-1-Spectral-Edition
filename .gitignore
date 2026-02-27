@@ -1,0 +1,18 @@
+# Binaries
+bin/sovereign
+*.o
+*.out
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Data & Logs
+data/*.json
+data/*.npy
+*.ppm
+*.wav
+*.png
+
+# Session data
+ctt_session_*/
